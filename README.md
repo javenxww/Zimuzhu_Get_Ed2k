@@ -1,4 +1,4 @@
-# Zimuzhu_Get_Ed2k
+# Zimuzu_Get_Ed2k
 ---
 ## 本项目完全输入兴趣产物
 相关网站：http://www.zimuzu.tv/
