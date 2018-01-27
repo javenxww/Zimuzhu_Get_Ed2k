@@ -10,7 +10,7 @@
 
 ## 依赖环境
 ```Shell
-pip3 install selenium
+pip3 install lxml
 pip3 install selenium
 ```
 ## 脚本使用
