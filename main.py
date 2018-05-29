@@ -2,11 +2,21 @@ import sys
 from selenium import webdriver
 import requests
 from lxml import html
+import http.client
 
+def _safe_read(self, amt): #继承，解决Chunk问题
+        s = []
+        while amt > 0:
+            chunk = self.fp.read(min(amt, MAXAMOUNT))
+            #if not chunk:
+                #raise IncompleteRead(b''.join(s), amt)
+            s.append(chunk)
+            amt -= len(chunk)
+        return b"".join(s)
 
 def get_jumpurl():
     global JUMPURL
-    driver = webdriver.Chrome('./chromedriver')
+    driver = webdriver.Chrome('./chromedriver.exe')
     URL = sys.argv[1]
     driver.get(URL)
     el = driver.find_element_by_xpath('//*[@id="resource-box"]/div/div/h3/a')
@@ -16,7 +26,8 @@ def get_jumpurl():
 
 def get_tags():
     global tags,tree,page
-    page = requests.get(JUMPURL).text
+    headers = { 'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4)AppleWebKit/537.36(KHTML,likeGecko)Chrome/44.0.2403.157 Safari/537.36',    'Connection':'keep-alive','Accept-Encoding':'gzip, deflate'}
+    page = requests.get(JUMPURL,headers = headers).text
     tree = html.fromstring(page)
     count1 = 1
     count2 = 1
