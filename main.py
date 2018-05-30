@@ -1,16 +1,28 @@
 # coding:utf-8
-import sys
-from selenium import webdriver
-import requests
-from lxml import html
+import sys,os
+try:
+    from selenium import webdriver
+except:
+    os.system("pip3 install selenium")
+    from selenium import webdriver
+try:
+    import requests
+except:
+    os.system("pip3 install requests")
+    import requests
+try:
+    from lxml import html
+except:
+    os.system("pip3 install lxml")
+    from lxml import html
 import platform
 
 OS = platform.platform()
 
 def get_jumpurl():
     global JUMPURL
-    option = webdriver.ChromeOptions()
-    option.add_argument("headless")
+    option = webdriver.ChromeOptions()  # Set Chrome running background
+    option.add_argument("headless")     # Set Chrome running background
     if "Windows" in OS:
         driver = webdriver.Chrome('./chromedriver.exe',chrome_options=option)
     if "Linux" in OS:
