@@ -12,6 +12,7 @@
 ```Shell
 pip3 install lxml
 pip3 install selenium
+pip3 install requests
 ```
 ## 脚本使用
 Example:
@@ -21,9 +22,3 @@ Example:
 python3 main.py http://www.zimuzu.tv/resource/30675
 ```
 过一会窗口会输出所有神盾局特工的电驴下载地址。
-
-
-
-
-
-
