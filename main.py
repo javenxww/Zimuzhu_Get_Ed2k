@@ -1,8 +1,13 @@
+# coding:utf-8
+
 import sys
 from selenium import webdriver
 import requests
 from lxml import html
 import http.client
+import platform
+
+OS = platform.platform()
 
 def _safe_read(self, amt): #继承，解决Chunk问题
         s = []
@@ -16,8 +21,13 @@ def _safe_read(self, amt): #继承，解决Chunk问题
 
 def get_jumpurl():
     global JUMPURL
-    driver = webdriver.Chrome('./chromedriver.exe')
-    URL = sys.argv[1]
+    if "Windows" in OS:
+        driver = webdriver.Chrome('./chromedriver.exe')
+    if "Linux" in OS:
+        driver = webdriver.Chrome('./chromedriver_linux')
+    if "macOS" in OS or "Mac" in OS:
+        driver = webdriver.Chrome('./chromedriver_macos')
+    URL = "http://www.zimuzu.tv/resource/30675"
     driver.get(URL)
     el = driver.find_element_by_xpath('//*[@id="resource-box"]/div/div/h3/a')
     JUMPURL = el.get_attribute('href')
