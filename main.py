@@ -1,33 +1,23 @@
 # coding:utf-8
-
 import sys
 from selenium import webdriver
 import requests
 from lxml import html
-import http.client
 import platform
 
 OS = platform.platform()
 
-def _safe_read(self, amt): #继承，解决Chunk问题
-        s = []
-        while amt > 0:
-            chunk = self.fp.read(min(amt, MAXAMOUNT))
-            #if not chunk:
-                #raise IncompleteRead(b''.join(s), amt)
-            s.append(chunk)
-            amt -= len(chunk)
-        return b"".join(s)
-
 def get_jumpurl():
     global JUMPURL
+    option = webdriver.ChromeOptions()
+    option.add_argument("headless")
     if "Windows" in OS:
-        driver = webdriver.Chrome('./chromedriver.exe')
+        driver = webdriver.Chrome('./chromedriver.exe',chrome_options=option)
     if "Linux" in OS:
-        driver = webdriver.Chrome('./chromedriver_linux')
-    if "macOS" in OS or "Mac" in OS:
-        driver = webdriver.Chrome('./chromedriver_macos')
-    URL = "http://www.zimuzu.tv/resource/30675"
+        driver = webdriver.Chrome('./chromedriver_linux',chrome_options=option)
+    if "Darwin" in OS or "Mac" in OS:
+        driver = webdriver.Chrome('./chromedriver_macos',chrome_options=option)
+    URL = sys.argv[1]
     driver.get(URL)
     el = driver.find_element_by_xpath('//*[@id="resource-box"]/div/div/h3/a')
     JUMPURL = el.get_attribute('href')
@@ -36,8 +26,14 @@ def get_jumpurl():
 
 def get_tags():
     global tags,tree,page
-    headers = { 'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4)AppleWebKit/537.36(KHTML,likeGecko)Chrome/44.0.2403.157 Safari/537.36',    'Connection':'keep-alive','Accept-Encoding':'gzip, deflate'}
-    page = requests.get(JUMPURL,headers = headers).text
+    headers = { 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'}
+    page = requests.get(JUMPURL,headers = headers,stream=True).text
     tree = html.fromstring(page)
     count1 = 1
     count2 = 1
@@ -78,15 +74,15 @@ def get_tags():
 
 
 def get_ed2kurl():
-    global list_1
-    list_1 = []
+    global ed2kurl
+    ed2kurl = []
     lenth = len(tags)
     x = 1
     y = 0
     el = tree.xpath('//*[@id='+tags[y]+']/ul/li[%d]/ul/li[2]/a/@href' % x)
     while y < lenth:
         while el != []:
-            if type(el) == list : list_1.append(str(el[0].encode('utf-8'),encoding='utf-8'))
+            if type(el) == list : ed2kurl.append(str(el[0].encode('utf-8'),encoding='utf-8'))
             x = x + 1
             el = tree.xpath('//*[@id=' + tags[y] + ']/ul/li[%d]/ul/li[2]/a/@href' % x)
         el = None
@@ -102,5 +98,5 @@ print('Getting ed2k links...')
 get_ed2kurl()
 
 
-for i in list_1:
+for i in ed2kurl:
     print(i)
